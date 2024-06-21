@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tigrinho - Roleta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        .roulette-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            width: 400px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .roulette {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            border: 2px solid #000;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: transform 0.5s ease-out;
+        }
+        .roulette:hover {
+            transform: scale(1.1);
+        }
+        .roulette .inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+            background-color: #f00;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .roulette .inner img {
+            width: 100%;
+            display: block;
+        }
+        .roulette .inner div {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            background-color: #fff;
+            top: 50%;
+            transform-origin: 50% 100%;
+            border-top: 1px solid #000;
+        }
+        .roulette .inner div:nth-child(odd) {
+            background-color: #000;
+            color: #fff;
+        }
+        .roulette .inner div span {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .carousel {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .carousel-inner {
+            display: flex;
+            transition: transform 6s cubic-bezier(0.1, 0.9, 0.2, 1);
+        }
+        .carousel-item {
+            width: 100px; /* Adjust width as needed */
+            flex: 0 0 auto;
+            margin-right: 10px;
+        }
+        .carousel-item img {
+            width: 100%;
+            display: block;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease-out;
+        }
+        .carousel-item img:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="roulette-container">
+        <h2>Tigrinho - Roleta</h2>
+        <div class="carousel">
+            <div class="carousel-inner" id="carouselItems">
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/150" alt="Item A" onclick="selectItem('Item A')">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/150" alt="Item B" onclick="selectItem('Item B')">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/150" alt="Item C" onclick="selectItem('Item C')">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/150" alt="Item D" onclick="selectItem('Item D')">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/150" alt="Item E" onclick="selectItem('Item E')">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/150" alt="Item F" onclick="selectItem('Item F')">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/150" alt="Item G" onclick="selectItem('Item G')">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/150" alt="Item H" onclick="selectItem('Item H')">
+                </div>
+            </div>
+        </div>
+        <button onclick="startRotation()">Girar Roleta</button>
+        <div class="result" id="rouletteResult"></div>
+        <div class="inventory">
+            <h3>Inventário</h3>
+            <ul id="inventoryList"></ul>
+            <div class="balance" id="balance">Saldo: R$<span id="balanceAmount">0,00</span></div>
+        </div>
+    </div>
+
+    <script>
+        const items = [
+            { name: "Item A", value: 50 },
+            { name: "Item B", value: 100 },
+            { name: "Item C", value: 150 },
+            { name: "Item D", value: 200 },
+            { name: "Item E", value: 250 },
+            { name: "Item F", value: 300 },
+            { name: "Item G", value: 350 },
+            { name: "Item H", value: 400 }
+        ];
+
+        let inventory = [];
+        let totalBalance = 0;
+
+        function startRotation() {
+            const carouselItems = document.getElementById('carouselItems');
+            const resultElement = document.getElementById('rouletteResult');
+            const randomIndex = Math.floor(Math.random() * items.length);
+            const selectedItem = items[randomIndex];
+            const targetIndex = items.indexOf(selectedItem);
+
+            // Calculate rotation duration based on target index
+            const rotationDuration = 6 + (targetIndex * 0.5); // Adjust as needed
+
+            // Simulate rotating carousel
+            carouselItems.style.transitionDuration = `${rotationDuration}s`;
+            carouselItems.style.transform = `translateX(-${targetIndex * 100}px)`;
+
+            // After rotation, update result and inventory
+            setTimeout(() => {
+                // Update result text
+                resultElement.innerText = `Você ganhou ${selectedItem.name} no valor de R$${selectedItem.value.toFixed(2).replace('.', ',')}.`;
+
+                // Update inventory and balance
+                inventory.push(selectedItem);
+                totalBalance += selectedItem.value;
+                updateInventory();
+                updateBalance();
+            }, rotationDuration * 1000);
+        }
+
+        function updateInventory() {
+            const inventoryListElement = document.getElementById('inventoryList');
+            inventoryListElement.innerHTML = '';
+            inventory.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} - R$${item.value.toFixed(2).replace('.', ',')}`;
+                inventoryListElement.appendChild(li);
+            });
+        }
+
+        function updateBalance() {
+            const balanceAmountElement = document.getElementById('balanceAmount');
+            balanceAmountElement.textContent = totalBalance.toFixed(2).replace('.', ',');
+        }
+
+        function selectItem(itemName) {
+            const resultElement = document.getElementById('rouletteResult');
+            const selectedItem = items.find(item => item.name === itemName);
+
+            // Update result text
+            resultElement.innerText = `Você selecionou ${selectedItem.name}.`;
+
+            // You can add more logic here for item selection behavior
+        }
+    </script>
+</body>
+</html>
+
+
